@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#07090E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="LUMA Guide AI - Live User Monitoring & Assistance for Visually Impaired Users. Real-time context-aware computer vision, priority hazard guidance, and voice interaction.">
+  <title>LUMA Guide AI — Live User Monitoring & Assistance</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="theme-dark">
+  <!-- Screen Reader Live Announcer -->
+  <div id="aria-announcer" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+
+  <!-- App Container -->
+  <div class="app-viewport" id="appViewport">
+    
+    <!-- Top System Bar -->
+    <header class="app-header" id="appHeader" role="banner">
+      <div class="header-left">
+        <!-- Main Menu Bar Toggle -->
+        <button id="mainMenuBtn" class="menu-toggle-btn icon-btn" aria-label="Open Navigation Menu" aria-expanded="false" aria-controls="sideMenuDrawer" title="Navigation Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <div class="brand-badge" id="brandHeaderBtn" role="button" tabindex="0" aria-label="LUMA Guide AI Home">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span class="brand-title">LUMA</span>
+          <span class="brand-tag">GUIDE AI</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- High Contrast Mode Toggle -->
+        <button id="contrastToggleBtn" class="icon-btn" aria-label="Toggle High Contrast Mode" title="High Contrast Mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a10 10 0 0 1 0 20z" fill="currentColor"></path>
+          </svg>
+        </button>
+
+        <!-- Sound / Audio Radar Mute Toggle -->
+        <button id="soundToggleBtn" class="icon-btn" aria-label="Toggle Sonar Audio Radar" title="Toggle Sonar Audio">
+          <svg id="soundIconOn" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg id="soundIconOff" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+
+        <!-- Login / User Account Quick Button -->
+        <button id="headerAuthBtn" class="auth-pill-btn" aria-label="Open User Login and Profile" title="Account Login">
+          <span class="auth-icon" aria-hidden="true">👤</span>
+          <span id="headerAuthLabel" class="auth-label">Login</span>
+        </button>
+
+        <!-- Prominent STOP / SILENCE Button for Blind Users -->
+        <button id="globalStopVoiceBtn" class="stop-voice-pill" aria-label="Stop Voice Guidance immediately" title="Stop Talking (Say 'Stop')">
+          <span>⏹️ STOP</span>
+        </button>
+
+        <!-- Emergency SOS Quick Button -->
+        <button id="headerSosBtn" class="sos-pill-btn" aria-label="Trigger Emergency SOS">
+          <span>SOS</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Security Context Notice Banner (Shown on insecure HTTP to guide users) -->
+    <div id="mobileSecurityBanner" class="mobile-security-banner hidden" role="alert">
+      <span class="sec-icon" aria-hidden="true">🔒</span>
+      <span id="mobileSecurityText" class="sec-text">Mobile Camera, Mic & GPS require HTTPS.</span>
+      <button id="mobileSecuritySwitchBtn" class="sec-action-btn">Switch to HTTPS</button>
+      <button id="closeSecurityBannerBtn" class="sec-close" aria-label="Dismiss notice">✕</button>
+    </div>
+
+    <!-- Slide-Out Navigation Menu Drawer -->
+    <div id="sideMenuOverlay" class="drawer-overlay hidden" aria-hidden="true"></div>
+    <aside id="sideMenuDrawer" class="side-menu-drawer" role="navigation" aria-label="Main Navigation Menu" aria-hidden="true">
+      <div class="drawer-header">
+        <div class="drawer-brand">
+          <span class="drawer-emblem">◉</span>
+          <div class="drawer-titles">
+            <span class="drawer-title">LUMA</span>
+            <span class="drawer-sub">Guide AI Menu</span>
+          </div>
+        </div>
+        <button id="closeMenuBtn" class="drawer-close-btn" aria-label="Close Menu">✕</button>
+      </div>
+
+      <!-- User Account Quick Card inside Menu -->
+      <div class="drawer-account-card" id="drawerAccountCard">
+        <div class="account-avatar" id="drawerAvatar">👤</div>
+        <div class="account-details">
+          <span class="account-name" id="drawerUserName">Guest Traveler</span>
+          <span class="account-status" id="drawerUserStatus">Tap to Log In / Sign Up</span>
+        </div>
+        <button id="drawerAuthActionBtn" class="drawer-auth-btn">Log In</button>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="drawer-nav-list" role="list">
+        <button class="drawer-item active" data-target="screen-welcome" role="listitem">
+          <span class="drawer-icon">🏠</span>
+          <div class="drawer-item-text">
+            <span class="drawer-label">Home</span>
+            <span class="drawer-hint">Welcome overview</span>
+          </div>
+        </button>
+        <button class="drawer-item" data-target="screen-live" role="listitem">
+          <span class="drawer-icon">📷</span>
+          <div class="drawer-item-text">
+            <span class="drawer-label">Live Assistance</span>
+            <span class="drawer-hint">Camera AI & hazard detection</span>
+          </div>
+        </button>
+        <button class="drawer-item" data-target="screen-nav" role="listitem">
+          <span class="drawer-icon">🧭</span>
+          <div class="drawer-item-text">
+            <span class="drawer-label">LUMA Navigation</span>
+            <span class="drawer-hint">Nearby places & voice directions</span>
+          </div>
+        </button>
+        <button class="drawer-item" data-target="screen-ask" role="listitem">
+          <span class="drawer-icon">🎙️</span>
+          <div class="drawer-item-text">
+            <span class="drawer-label">Ask LUMA</span>
+            <span class="drawer-hint">Hands-free voice assistant</span>
+          </div>
+        </button>
+        <button class="drawer-item" data-target="screen-read" role="listitem">
+          <span class="drawer-icon">📖</span>
+          <div class="drawer-item-text">
+            <span class="drawer-label">Read & OCR</span>
+            <span class="drawer-hint">Scan signs, plates & menus</span>
+          </div>
+        </button>
+        <button class="drawer-item" data-target="screen-describe" role="listitem">
+          <span class="drawer-icon">🌐</span>
+          <div class="drawer-item-text">
+            <span class="drawer-label">Scene Description</span>
+            <span class="drawer-hint">Spatial surroundings summary</span>
+          </div>
+        </button>
+        <button class="drawer-item" data-target="screen-history" role="listitem">
+          <span class="drawer-icon">📋</span>
+          <div class="drawer-item-text">
+            <span class="drawer-label">Assistance History</span>
+            <span class="drawer-hint">Event audit trail</span>
+          </div>
+        </button>
+        <button class="drawer-item" data-target="screen-settings" role="listitem">
+          <span class="drawer-icon">⚙️</span>
+          <div class="drawer-item-text">
+            <span class="drawer-label">Settings & Accessibility</span>
+            <span class="drawer-hint">Speech speed, sensitivity & modes</span>
+          </div>
+        </button>
+        <button class="drawer-item" id="drawerAccountNavItem" role="listitem">
+          <span class="drawer-icon">👤</span>
+          <div class="drawer-item-text">
+            <span class="drawer-label" id="drawerAccountNavLabel">User Account</span>
+            <span class="drawer-hint">Login, sign up & traveler profile</span>
+          </div>
+        </button>
+      </nav>
+
+      <!-- Quick Accessibility Toggles inside Menu -->
+      <div class="drawer-footer-actions">
+        <button id="drawerContrastToggle" class="drawer-toggle-pill">
+          <span>🎨 High Contrast</span>
+        </button>
+        <button id="drawerVoiceToggle" class="drawer-toggle-pill">
+          <span>🔊 Voice Guidance</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Floating Hands-Free Voice Control Status Bar -->
+    <div id="floatingVoiceBar" class="floating-voice-bar" role="status" aria-live="polite">
+      <div class="voice-bar-content">
+        <span id="voiceBarDot" class="voice-dot active" aria-hidden="true"></span>
+        <span id="voiceBarText" class="voice-bar-text">🎙️ Listening... Say "Help", "Start", or "Stop"</span>
+      </div>
+      <button id="voiceBarMuteToggleBtn" class="voice-bar-btn" aria-label="Mute or Unmute Voice Guidance">
+        SILENCE
+      </button>
+    </div>
+
+    <!-- MAIN APP SCREENS CONTAINER -->
+    <main class="app-main" id="appMain" role="main">
+
+      <!-- ==============================================
+           SCREEN 1: WELCOME / LANDING SCREEN
+           ============================================== -->
+      <section id="screen-welcome" class="screen screen-active" aria-labelledby="welcome-title">
+        <div class="welcome-container">
+          
+          <!-- Logo & Radar Pulse Glow -->
+          <div class="logo-hero" aria-hidden="true">
+            <div class="radar-circle circle-1"></div>
+            <div class="radar-circle circle-2"></div>
+            <div class="radar-circle circle-3"></div>
+            <div class="luma-emblem">
+              <span class="emblem-core">◉</span>
+            </div>
+          </div>
+
+          <div class="hero-content">
+            <h1 id="welcome-title" class="hero-brand">
+              <span class="highlight">LUMA</span> GUIDE AI
+            </h1>
+            <p class="hero-subhead">Live User Monitoring & Assistance</p>
+            <p class="hero-description">
+              Intelligent, context-aware visual guidance for the world around you. Powered by camera perception and voice interaction.
+            </p>
+          </div>
+
+          <!-- The Core Differentiator Concept Pill -->
+          <div class="concept-strip" aria-label="LUMA Core Flow: See, Understand, Prioritize, Guide">
+            <div class="concept-step">
+              <span class="step-num">1</span>
+              <span class="step-label">SEE</span>
+            </div>
+            <span class="step-arrow" aria-hidden="true">→</span>
+            <div class="concept-step">
+              <span class="step-num">2</span>
+              <span class="step-label">UNDERSTAND</span>
+            </div>
+            <span class="step-arrow" aria-hidden="true">→</span>
+            <div class="concept-step highlight-step">
+              <span class="step-num">3</span>
+              <span class="step-label">PRIORITIZE</span>
+            </div>
+            <span class="step-arrow" aria-hidden="true">→</span>
+            <div class="concept-step">
+              <span class="step-num">4</span>
+              <span class="step-label">GUIDE</span>
+            </div>
+          </div>
+
+          <!-- Voice Accessibility Prompt for Blind Users -->
+          <div class="blind-voice-card" id="blindVoiceCard" role="button" tabindex="0" aria-label="Tap to activate full hands-free voice commands">
+            <div class="blind-card-header">
+              <span class="blind-mic-pulse">🎙️</span>
+              <span class="blind-title">Hands-Free Voice Navigation</span>
+            </div>
+            <p class="blind-desc">
+              Designed for visually impaired users. <strong>Tap anywhere</strong> or speak:
+            </p>
+            <div class="blind-commands-chips">
+              <span class="cmd-chip">"Start"</span>
+              <span class="cmd-chip">"Stop"</span>
+              <span class="cmd-chip">"What is in front?"</span>
+              <span class="cmd-chip">"Read"</span>
+              <span class="cmd-chip">"Describe"</span>
+              <span class="cmd-chip">"Help"</span>
+            </div>
+          </div>
+
+          <!-- Location & Navigation Voice Launch Cards -->
+          <div class="welcome-nav-cards" aria-label="Navigation & Nearby Places Voice Launchers">
+            <div class="home-nav-card" id="cardNearbyPlaces" role="button" tabindex="0" aria-label="Find Nearby Places">
+              <div class="home-card-header">
+                <span class="home-card-icon" aria-hidden="true">📍</span>
+                <span class="home-card-title">Nearby Places</span>
+              </div>
+              <p class="home-card-desc">Find pharmacies, hospitals, cafés, ATMs nearby.</p>
+              <div class="home-card-prompt">🎙️ Say: <em>"Find a pharmacy"</em></div>
+            </div>
+
+            <div class="home-nav-card" id="cardNavigate" role="button" tabindex="0" aria-label="Voice Turn-by-Turn Navigation">
+              <div class="home-card-header">
+                <span class="home-card-icon" aria-hidden="true">🧭</span>
+                <span class="home-card-title">Voice Navigation</span>
+              </div>
+              <p class="home-card-desc">Turn-by-turn pedestrian voice guidance.</p>
+              <div class="home-card-prompt">🎙️ Say: <em>"Take me to..."</em></div>
+            </div>
+          </div>
+
+          <!-- Primary Actions -->
+          <div class="welcome-actions">
+            <button id="startAssistanceBtn" class="btn-primary-large" aria-label="Start Live Camera Assistance">
+              <span class="btn-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+              </span>
+              <span class="btn-text">START ASSISTANCE</span>
+            </button>
+
+            <!-- Audio Orientation Tour Button -->
+            <button id="welcomeAudioTourBtn" class="btn-secondary-large" aria-label="Listen to Audio Orientation">
+              <span class="btn-icon" aria-hidden="true">🔊</span>
+              <span>Audio Orientation</span>
+            </button>
+          </div>
+
+          <!-- Quick Capabilities Grid -->
+          <div class="feature-pills-row" role="list" aria-label="Key Features">
+            <div class="feature-pill" role="listitem">
+              <span class="pill-icon" aria-hidden="true">⚠️</span>
+              <span>Smart Priority Hazards</span>
+            </div>
+            <div class="feature-pill" role="listitem">
+              <span class="pill-icon" aria-hidden="true">🎙️</span>
+              <span>Ask LUMA Voice</span>
+            </div>
+            <div class="feature-pill" role="listitem">
+              <span class="pill-icon" aria-hidden="true">📖</span>
+              <span>Text & OCR Reader</span>
+            </div>
+            <div class="feature-pill" role="listitem">
+              <span class="pill-icon" aria-hidden="true">🌐</span>
+              <span>Scene Description</span>
+            </div>
+          </div>
+
+          <!-- What Makes LUMA Guide AI Different: The 7 Pillars Showcase -->
+          <div class="pillars-card" aria-label="What makes LUMA Guide AI Different">
+            <h3 class="pillars-title">
+              <span>🌟 What Makes LUMA Guide AI Different</span>
+            </h3>
+            <div class="pillars-list">
+              <div class="pillar-item">
+                <span class="pillar-num">1</span>
+                <div class="pillar-info">
+                  <h4>🧠 Decisions Over Detections</h4>
+                  <p>Unlike raw systems that recite every object, LUMA analyzes context &amp; trajectory: <em>Camera → Detection → Context Analysis → Risk/Priority → Guidance</em>.</p>
+                </div>
+              </div>
+
+              <div class="pillar-item">
+                <span class="pillar-num">2</span>
+                <div class="pillar-info">
+                  <h4>🚨 4-Tier Priority Classification</h4>
+                  <p>Prevents sensory overload for blind travelers by filtering non-critical objects:</p>
+                  <div class="priority-tier-matrix">
+                    <div class="tier-badge-card" style="border-color: var(--color-critical);">
+                      <span class="tier-label" style="color: var(--color-critical);">🔴 Critical Alert</span>
+                      <span class="tier-sub">Approaching car → Immediate Alert</span>
+                    </div>
+                    <div class="tier-badge-card" style="border-color: var(--color-caution);">
+                      <span class="tier-label" style="color: var(--color-caution);">🟠 Warning</span>
+                      <span class="tier-sub">Stairs ahead → Warning</span>
+                    </div>
+                    <div class="tier-badge-card" style="border-color: var(--color-info);">
+                      <span class="tier-label" style="color: var(--color-info);">🟢 Informational</span>
+                      <span class="tier-sub">Door nearby → Optional Info</span>
+                    </div>
+                    <div class="tier-badge-card" style="border-color: rgba(255,255,255,0.2);">
+                      <span class="tier-label" style="color: #AAA;">⚪ Low Priority</span>
+                      <span class="tier-sub">Chair far away → No Alert (Silent)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pillar-item">
+                <span class="pillar-num">3</span>
+                <div class="pillar-info">
+                  <h4>📍 Direction + Distance + Object</h4>
+                  <p>Communicates <strong>WHAT + WHERE + HOW FAR + HOW IMPORTANT</strong> (e.g. <em>"Car approaching from your left, approximately 3 meters away."</em>).</p>
+                </div>
+              </div>
+
+              <div class="pillar-item">
+                <span class="pillar-num">4</span>
+                <div class="pillar-info">
+                  <h4>👁️ Continuous Environmental Awareness</h4>
+                  <p><strong>Passive Mode:</strong> Monitors silently and speaks only when important hazards arise.<br>
+                  <strong>Active Mode:</strong> Directly answers conversational queries (<em>"What's around me?"</em>, <em>"Is my path clear?"</em>).</p>
+                </div>
+              </div>
+
+              <div class="pillar-item">
+                <span class="pillar-num">5</span>
+                <div class="pillar-info">
+                  <h4>🎙️ Voice-First Interaction</h4>
+                  <p>100% hands-free voice commands, audible acoustic earcons, and instant silence controls tailored for visually impaired navigation.</p>
+                </div>
+              </div>
+
+              <div class="pillar-item">
+                <span class="pillar-num">6</span>
+                <div class="pillar-info">
+                  <h4>📖 Unified Assistance Architecture</h4>
+                  <p>Objects + Text + Scene fused by the Context Engine into a single coordinated priority layer.</p>
+                </div>
+              </div>
+
+              <div class="pillar-item">
+                <span class="pillar-num">7</span>
+                <div class="pillar-info">
+                  <h4>🔄 Adaptive Situational Intelligence</h4>
+                  <p>Dynamically adapts to situations: Normal (quiet), Obstacle, Dangerous Obstacle, Building Doorways, and Proactive Sign Reading.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCREEN 2: CAMERA PERMISSION & SETUP
+           ============================================== -->
+      <section id="screen-permission" class="screen" aria-labelledby="permission-title">
+        <div class="permission-card">
+          <div class="permission-icon-wrap" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+          </div>
+
+          <h2 id="permission-title" class="permission-heading">Camera Access Required</h2>
+          
+          <p class="permission-text">
+            LUMA needs permission to use your smartphone camera to understand your surroundings, detect obstacles, and provide real-time voice guidance.
+          </p>
+
+          <div class="permission-privacy-note">
+            <span class="privacy-lock" aria-hidden="true">🔒</span>
+            <span>All vision processing occurs locally on your device. Video frames are never stored or sent to external servers.</span>
+          </div>
+
+          <div class="permission-actions">
+            <button id="allowCameraBtn" class="btn-primary-large" aria-label="Allow camera access and begin live assistance">
+              <span>ALLOW CAMERA ACCESS</span>
+            </button>
+
+            <button id="useSimulationBtn" class="btn-secondary-large" aria-label="Use simulated camera feed for testing and presentation">
+              <span>USE SIMULATED CAMERA (DEMO)</span>
+            </button>
+            
+            <button id="permissionBackBtn" class="btn-ghost" aria-label="Go back to welcome screen">
+              <span>Back</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCREEN 3: LIVE ASSISTANCE (THE HEART ⭐)
+           ============================================== -->
+      <section id="screen-live" class="screen" aria-label="Live Camera Assistance Screen">
+        
+        <!-- Live Video & Canvas Container -->
+        <div class="camera-viewport" id="cameraViewport">
+          <!-- Real Camera Stream -->
+          <video id="liveVideo" autoplay playsinline muted></video>
+
+          <!-- Interactive Simulated Canvas (when real camera is inactive or in demo mode) -->
+          <canvas id="simCanvas" class="hidden"></canvas>
+
+          <!-- Detection HUD Canvas Overlay (bounding boxes, distance markers, trajectories) -->
+          <canvas id="detectionCanvas"></canvas>
+
+          <!-- Sonar Radar Acoustic Ripple Effect -->
+          <div id="sonarRipple" class="sonar-ripple" aria-hidden="true"></div>
+
+            <!-- Top HUD Overlay Status Bar -->
+            <div class="hud-top-bar">
+              <div class="hud-chip">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span id="hudStatusText">MONITORING</span>
+              </div>
+
+              <!-- Operational Mode Pill (Passive vs Active) -->
+              <button id="hudModeToggleBtn" class="hud-pill-btn mode-pill-btn passive" aria-label="Toggle between Passive and Active operational mode" title="Operational Mode (Passive vs Active)">
+                <span id="hudModeIcon">👁️</span>
+                <span id="hudModeText">PASSIVE</span>
+              </button>
+
+              <!-- Adaptive Situation Badge -->
+              <div class="hud-chip situation-chip situation-normal" id="hudSituationBadge" title="Current Adaptive Situation">
+                <span id="hudSituationText">🟢 PATH CLEAR</span>
+              </div>
+
+              <!-- AI Engine Badge (Real AI vs Optical vs Demo) -->
+              <div class="hud-chip ai-engine-chip" id="aiEngineBadge" title="Current AI Vision Engine">
+                <span class="engine-indicator">🟢</span>
+                <span id="aiEngineName">AI READY</span>
+              </div>
+
+              <!-- Smartphone Live Compass Heading -->
+              <div class="hud-chip compass-chip" id="compassHeadingBadge" title="Live Smartphone Compass">
+                🧭 N 0°
+              </div>
+
+              <!-- Toggle Real Camera vs Demo Simulation -->
+              <button id="toggleCameraSourceBtn" class="hud-pill-btn" aria-label="Switch between live camera and demo simulation">
+                <span id="cameraSourceIcon">📷</span>
+                <span id="cameraSourceText">LIVE</span>
+              </button>
+
+              <!-- Demo Scenario Picker (5 Adaptive Situations) -->
+              <div class="hud-scenario-picker hidden" id="hudScenarioWrap">
+                <label for="scenarioSelect" class="sr-only">Switch Demo Scenario</label>
+                <select id="scenarioSelect" aria-label="Select Demo Scenario">
+                  <option value="stairs">🪜 Stairs Ahead (2.4m Warning)</option>
+                  <option value="vehicle">🚗 Situation 3 — Dangerous Obstacle (Vehicle Approaching)</option>
+                  <option value="door">🚪 Situation 4 — Entering Building (Door Ahead 3m)</option>
+                  <option value="person">🚶 Situation 2 — Obstacle Ahead (Pedestrian 3.5m)</option>
+                  <option value="clear">🟢 Situation 1 — Normal (Clear Path • Quiet)</option>
+                  <option value="signs">📖 Situation 5 — Pointing at Sign (Read Prompt)</option>
+                </select>
+              </div>
+
+              <div class="hud-controls">
+                <!-- Snap Photo Button (Phone Camera Snapshot) -->
+                <button id="hudSnapshotBtn" class="hud-icon-btn" aria-label="Take a photo snapshot with camera" title="Take Photo Snapshot">
+                  📸
+                </button>
+
+                <!-- Flip Camera Rear / Front -->
+                <button id="flipCameraBtn" class="hud-icon-btn" aria-label="Switch between rear and front camera" title="Flip Camera">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                  </svg>
+                </button>
+
+                <!-- Pause / Resume Assistance -->
+                <button id="toggleAssistBtn" class="hud-icon-btn" aria-label="Pause assistance monitoring" title="Pause / Resume">
+                  <svg id="assistPauseIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <rect x="6" y="4" width="4" height="16"></rect>
+                    <rect x="14" y="4" width="4" height="16"></rect>
+                  </svg>
+                  <svg id="assistPlayIcon" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Camera Error / Diagnostic Banner (displayed if camera blocked) -->
+            <div id="cameraErrorBanner" class="camera-error-banner hidden" role="alert">
+              <div class="camera-error-content">
+                <span class="error-icon">⚠️</span>
+                <div class="error-text-wrap">
+                  <h4 id="cameraErrorTitle">Camera Access Issue</h4>
+                  <p id="cameraErrorMessage">Unable to access your camera. Ensure you have granted permission.</p>
+                </div>
+              </div>
+              <div class="error-action-row">
+                <button id="retryCameraBtn" class="error-action-btn">🔄 Retry Camera</button>
+                <button id="fallbackSimBtn" class="error-action-btn secondary">🎮 Use Demo Mode</button>
+                <button id="cameraSnapshotBtn" class="error-action-btn tertiary">📸 Snap Photo</button>
+              </div>
+            </div>
+
+          <!-- Visual Scanning Reticle Lines -->
+          <div class="hud-scanline" aria-hidden="true"></div>
+
+          <!-- SMART PRIORITY ALERT BANNER (The Core Innovation) -->
+          <div class="priority-banner-wrap" id="priorityBannerWrap">
+            <div id="priorityBanner" class="priority-banner priority-caution" role="status" aria-live="assertive">
+              <div class="priority-badge-row">
+                <span id="priorityLevelTag" class="priority-level-tag">CRITICAL ALERT</span>
+                <span id="priorityDistanceTag" class="priority-metric-tag">2.4 m • FRONT</span>
+              </div>
+              <div class="priority-content-row">
+                <span id="priorityIcon" class="priority-icon" aria-hidden="true">⚠️</span>
+                <div class="priority-text-block">
+                  <h3 id="priorityTitle" class="priority-title">Stairs detected ahead</h3>
+                  <p id="prioritySubtext" class="priority-subtext">Slow down. 3 steps down approaching in center path.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Assistance Floating Controls -->
+          <div class="live-action-bar">
+            <!-- Mode Switcher Tabs -->
+            <div class="live-mode-pills" role="tablist" aria-label="Assistance Modes">
+              <button class="mode-pill active" id="modeBtnAssist" role="tab" aria-selected="true" aria-controls="screen-live">
+                <span>GUIDE</span>
+              </button>
+              <button class="mode-pill" id="modeBtnRead" role="tab" aria-selected="false">
+                <span>READ OCR</span>
+              </button>
+              <button class="mode-pill" id="modeBtnDescribe" role="tab" aria-selected="false">
+                <span>DESCRIBE</span>
+              </button>
+            </div>
+
+            <!-- Big Voice "Ask LUMA" Trigger -->
+            <div class="voice-trigger-wrap">
+              <button id="liveAskLumaBtn" class="ask-luma-fab" aria-label="Ask LUMA Voice Question">
+                <span class="fab-pulse-ring" aria-hidden="true"></span>
+                <span class="fab-icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                  </svg>
+                </span>
+                <span class="fab-label">ASK LUMA</span>
+              </button>
+            </div>
+
+            <!-- Replay Last Guidance Button -->
+            <button id="repeatGuidanceBtn" class="hud-circle-btn" aria-label="Repeat last voice instruction" title="Repeat Last Guidance">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCREEN 4: ASK LUMA (VOICE & TEXT INTERACTION)
+           ============================================== -->
+      <section id="screen-ask" class="screen" aria-labelledby="ask-title">
+        <div class="interactive-screen-container">
+          
+          <div class="screen-header-bar">
+            <h2 id="ask-title" class="screen-title">
+              <span class="title-icon">🎙️</span> Ask LUMA
+            </h2>
+            <button id="closeAskScreenBtn" class="close-screen-btn" aria-label="Return to live camera">
+              ✕
+            </button>
+          </div>
+
+          <!-- Voice Listening Status Visualizer -->
+          <div class="voice-visualizer-card">
+            <div class="voice-soundwave" id="voiceSoundwave" aria-hidden="true">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </div>
+
+            <div class="voice-status-box">
+              <p id="voiceStatusText" class="voice-status-text">Listening... speak your question</p>
+              <p id="userTranscriptText" class="user-transcript-text">"What is in front of me?"</p>
+            </div>
+
+            <button id="micToggleBtn" class="mic-round-btn active" aria-label="Toggle Microphone Recording">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- LUMA AI Response Card -->
+          <div class="ai-response-card" id="aiResponseCard">
+            <div class="response-header">
+              <span class="ai-badge">LUMA RESPONSE</span>
+              <button id="replayVoiceResponseBtn" class="replay-btn" aria-label="Replay voice answer">
+                🔊 Speak Again
+              </button>
+            </div>
+            <p id="aiResponseText" class="ai-response-text">
+              "A person is approximately 3 meters ahead and slightly to your left. Your direct center path is clear."
+            </p>
+          </div>
+
+          <!-- Common Voice Questions Presets -->
+          <div class="preset-questions-section">
+            <h3 class="presets-title">Tap to Ask Common Questions:</h3>
+            <div class="preset-buttons-grid">
+              <button class="preset-chip" data-question="What is in front of me?">
+                "What is in front of me?"
+              </button>
+              <button class="preset-chip" data-question="Is my path clear?">
+                "Is my path clear?"
+              </button>
+              <button class="preset-chip" data-question="Are there stairs nearby?">
+                "Are there stairs nearby?"
+              </button>
+              <button class="preset-chip" data-question="Read that sign">
+                "Read that sign"
+              </button>
+              <button class="preset-chip" data-question="Describe my surroundings">
+                "Describe my surroundings"
+              </button>
+              <button class="preset-chip" data-question="Where is the door?">
+                "Where is the door?"
+              </button>
+            </div>
+          </div>
+
+          <!-- Text Fallback Input -->
+          <form id="askTextForm" class="text-input-form" aria-label="Type your question for LUMA">
+            <label for="askTextInput" class="sr-only">Type a question</label>
+            <input type="text" id="askTextInput" placeholder="Or type your question here..." autocomplete="off">
+            <button type="submit" class="send-btn" aria-label="Submit question">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </form>
+
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCREEN 5: READ & UNDERSTAND (OCR MODE)
+           ============================================== -->
+      <section id="screen-read" class="screen" aria-labelledby="read-title">
+        <div class="interactive-screen-container">
+          
+          <div class="screen-header-bar">
+            <h2 id="read-title" class="screen-title">
+              <span class="title-icon">📖</span> Read & Understand
+            </h2>
+            <button id="closeReadScreenBtn" class="close-screen-btn" aria-label="Return to live camera">
+              ✕
+            </button>
+          </div>
+
+          <p class="section-instruction">
+            Point camera at signs, door plates, menus, or labels. LUMA will extract and read the text aloud.
+          </p>
+
+          <!-- Text Viewfinder Simulation Box -->
+          <div class="ocr-viewfinder-card">
+            <div class="viewfinder-frame">
+              <div class="corner top-left"></div>
+              <div class="corner top-right"></div>
+              <div class="corner bottom-left"></div>
+              <div class="corner bottom-right"></div>
+              
+              <div class="ocr-detected-box">
+                <span class="ocr-tag">DETECTED SIGN</span>
+                <p id="ocrLiveText" class="ocr-preview-text">ROOM 204 — COMPUTER LAB</p>
+                <p id="ocrSubLiveText" class="ocr-preview-subtext">DEPARTMENT OF COMPUTER SCIENCE</p>
+              </div>
+            </div>
+
+            <!-- OCR Controls -->
+            <div class="ocr-action-bar">
+              <button id="ocrScanNowBtn" class="btn-primary-large">
+                <span aria-hidden="true">📷</span>
+                <span>SCAN TEXT NOW</span>
+              </button>
+              
+              <button id="ocrReadAloudBtn" class="btn-secondary-large">
+                <span aria-hidden="true">🔊</span>
+                <span>READ ALOUD</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sample Signs for Demo / Testing -->
+          <div class="demo-ocr-samples">
+            <h3 class="presets-title">Test with Sample Signage:</h3>
+            <div class="sample-signs-list">
+              <button class="sample-sign-chip" data-title="ROOM 204 — COMPUTER LAB" data-sub="Department of Computer Science • Hours: 8 AM - 6 PM">
+                🏫 Room 204 Computer Lab
+              </button>
+              <button class="sample-sign-chip" data-title="CAUTION — WET FLOOR" data-sub="Watch your step • Slip hazard ahead">
+                ⚠️ Caution Wet Floor
+              </button>
+              <button class="sample-sign-chip" data-title="EMERGENCY EXIT ONLY" data-sub="Push bar to open • Alarm will sound">
+                🚪 Emergency Exit Only
+              </button>
+              <button class="sample-sign-chip" data-title="ELEVATOR 2 — FLOORS 1 TO 6" data-sub="Braille panel located on right door frame">
+                🛗 Elevator 2 Floors 1-6
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCREEN 6: ENVIRONMENT UNDERSTANDING (DESCRIBE)
+           ============================================== -->
+      <section id="screen-describe" class="screen" aria-labelledby="describe-title">
+        <div class="interactive-screen-container">
+          
+          <div class="screen-header-bar">
+            <h2 id="describe-title" class="screen-title">
+              <span class="title-icon">🌐</span> Scene Understanding
+            </h2>
+            <button id="closeDescribeScreenBtn" class="close-screen-btn" aria-label="Return to live camera">
+              ✕
+            </button>
+          </div>
+
+          <p class="section-instruction">
+            LUMA synthesizes the entire environment into a coherent, spatial narrative rather than isolated object names.
+          </p>
+
+          <div class="scene-narrative-card">
+            <div class="scene-header">
+              <span class="scene-badge">SURROUNDING SUMMARY</span>
+              <button id="narrateSceneBtn" class="replay-btn" aria-label="Listen to scene description aloud">
+                🔊 Read Aloud
+              </button>
+            </div>
+
+            <p id="sceneNarrativeText" class="scene-narrative-text">
+              "You are in a well-lit indoor corridor. Approximately 2.5 meters ahead, a set of 3 steps leads downward. A pedestrian is walking slowly on your left side. An open doorway is visible about 4 meters ahead on your right."
+            </p>
+
+            <div class="scene-tags-row" id="sceneElementsTags">
+              <span class="element-tag">🪜 3 Steps Down (2.5m)</span>
+              <span class="element-tag">🚶 1 Pedestrian (Left)</span>
+              <span class="element-tag">🚪 Open Doorway (Right)</span>
+              <span class="element-tag">💡 Well Lit</span>
+            </div>
+          </div>
+
+          <div class="describe-actions">
+            <button id="refreshSceneBtn" class="btn-primary-large">
+              <span>REFRESH SCENE ANALYSIS</span>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCREEN 7: ASSISTANCE HISTORY
+           ============================================== -->
+      <section id="screen-history" class="screen" aria-labelledby="history-title">
+        <div class="interactive-screen-container">
+          
+          <div class="screen-header-bar">
+            <h2 id="history-title" class="screen-title">
+              <span class="title-icon">📋</span> Assistance History
+            </h2>
+            <button id="clearHistoryBtn" class="clear-history-btn" aria-label="Clear assistance history log">
+              Clear
+            </button>
+          </div>
+
+          <!-- History Filter Pills -->
+          <div class="history-filters" role="tablist" aria-label="Filter History">
+            <button class="filter-chip active" data-filter="all">All Events</button>
+            <button class="filter-chip" data-filter="critical">Hazards ⚠️</button>
+            <button class="filter-chip" data-filter="ocr">Text Reads 📖</button>
+            <button class="filter-chip" data-filter="voice">Voice Q&A 🎙️</button>
+          </div>
+
+          <!-- Timeline Event List -->
+          <div class="history-timeline" id="historyTimeline" role="feed" aria-label="Assistance event log">
+            <!-- Dynamically populated by history.js -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCREEN 8: SETTINGS & ACCESSIBILITY
+           ============================================== -->
+      <section id="screen-settings" class="screen" aria-labelledby="settings-title">
+        <div class="interactive-screen-container">
+          
+          <div class="screen-header-bar">
+            <h2 id="settings-title" class="screen-title">
+              <span class="title-icon">⚙️</span> Settings & Accessibility
+            </h2>
+          </div>
+
+          <div class="settings-list">
+            
+            <!-- Voice Guidance Toggle -->
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Voice Guidance</span>
+                <span class="setting-desc">Speak alerts and hazard announcements</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="settingVoiceGuidance" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- Voice Speed Slider -->
+            <div class="setting-item slider-setting">
+              <div class="setting-info">
+                <span class="setting-label">Voice Speed: <strong id="voiceSpeedVal">1.0×</strong></span>
+                <span class="setting-desc">Adjust speech synthesis playback rate</span>
+              </div>
+              <input type="range" id="settingVoiceSpeed" min="0.7" max="1.6" step="0.1" value="1.0" class="range-slider" aria-label="Voice speed slider">
+              <button id="testVoiceBtn" class="test-voice-btn">Test Voice</button>
+            </div>
+
+            <!-- Alert Sensitivity -->
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Alert Sensitivity</span>
+                <span class="setting-desc">Threshold for obstacle warnings</span>
+              </div>
+              <select id="settingSensitivity" class="select-dropdown" aria-label="Alert sensitivity">
+                <option value="high" selected>High (Earlier warnings)</option>
+                <option value="medium">Medium (Standard)</option>
+                <option value="low">Low (Critical hazards only)</option>
+              </select>
+            </div>
+
+            <!-- Detection Mode -->
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Detection Mode</span>
+                <span class="setting-desc">Smart priority filtering vs all objects</span>
+              </div>
+              <select id="settingDetectionMode" class="select-dropdown" aria-label="Detection mode">
+                <option value="smart" selected>Smart Priority (Recommended)</option>
+                <option value="verbose">Verbose (All objects)</option>
+              </select>
+            </div>
+
+            <!-- Operational Mode (Pillar 4: Passive vs Active) -->
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Operational Mode</span>
+                <span class="setting-desc">Passive (Silent monitoring, alerts on hazards) vs Active (Conversational)</span>
+              </div>
+              <select id="settingOperationalMode" class="select-dropdown" aria-label="Operational mode">
+                <option value="passive" selected>Passive Mode (Quiet monitoring, alerts on hazards)</option>
+                <option value="active">Active Mode (Interactive voice Q&amp;A)</option>
+              </select>
+            </div>
+
+            <!-- Sonar Proximity Acoustic Radar -->
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Acoustic Sonar Radar</span>
+                <span class="setting-desc">Sound frequency shifts with obstacle proximity</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="settingSonarRadar" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- Haptic Vibration Feedback -->
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Haptic Feedback</span>
+                <span class="setting-desc">Vibrate smartphone when hazards are close</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="settingHaptics" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- High Contrast Mode -->
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">High Contrast (WCAG AAA)</span>
+                <span class="setting-desc">Pure black & canary yellow high visibility</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="settingHighContrast">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- Language -->
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Language</span>
+                <span class="setting-desc">Voice guidance language</span>
+              </div>
+              <select id="settingLanguage" class="select-dropdown" aria-label="Language selection">
+                <option value="en-US" selected>English (US)</option>
+                <option value="en-GB">English (UK)</option>
+                <option value="es-ES">Spanish (Español)</option>
+                <option value="fr-FR">French (Français)</option>
+                <option value="de-DE">German (Deutsch)</option>
+                <option value="hi-IN">Hindi (हिंदी)</option>
+              </select>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCREEN 10: LUMA NAVIGATION ("GO" MODE)
+           ============================================== -->
+      <section id="screen-nav" class="screen" aria-labelledby="nav-screen-title">
+        <div class="interactive-screen-container">
+          
+          <div class="screen-header-bar">
+            <h2 id="nav-screen-title" class="screen-title">
+              <span class="title-icon">🧭</span> LUMA Navigation
+            </h2>
+            <div class="nav-location-pill" id="navGpsBadge" title="Current GPS Status">
+              <span class="pulse-dot-green"></span>
+              <span id="navLocationBadgeText">Detecting location...</span>
+            </div>
+          </div>
+
+          <!-- Active Turn-by-Turn Guidance Card (shown when route is active) -->
+          <div id="navActiveRouteCard" class="nav-active-route-card hidden" role="region" aria-label="Active Turn-by-Turn Route">
+            <div class="route-header-row">
+              <div class="route-dest-info">
+                <span class="route-tag">NAVIGATING TO</span>
+                <h3 id="navDestName" class="route-dest-title">Apollo Pharmacy</h3>
+              </div>
+              <div class="route-metrics">
+                <span id="navTotalDistance" class="route-dist-metric">250 m</span>
+                <span id="navTotalTime" class="route-time-metric">~4 min</span>
+              </div>
+            </div>
+
+            <!-- Big Next Step Direction Banner -->
+            <div class="nav-step-banner">
+              <div id="navStepIcon" class="nav-step-icon">⬆️</div>
+              <div class="nav-step-body">
+                <span class="nav-step-sublabel">NEXT MANEUVER</span>
+                <p id="navStepInstruction" class="nav-step-instruction">Walk straight for approximately 80 metres.</p>
+              </div>
+              <div id="navStepDistance" class="nav-step-countdown">80 m</div>
+            </div>
+
+            <!-- Multi-Modal Camera Fusion Warning Badge -->
+            <div id="navCameraGuardBadge" class="nav-camera-guard" aria-live="assertive">
+              <span class="guard-icon">📷</span>
+              <span class="guard-text">Camera Guard Active: Monitoring pathway for obstacles</span>
+            </div>
+
+            <!-- Walk Simulation & Voice Guidance Controls -->
+            <div class="nav-route-controls">
+              <button id="simStepBtn" class="nav-ctrl-btn primary" aria-label="Simulate step forward 25 metres">
+                <span>🚶 Walk Step (+25m)</span>
+              </button>
+              <button id="repeatStepBtn" class="nav-ctrl-btn secondary" aria-label="Repeat current navigation direction aloud">
+                <span>🔊 Repeat</span>
+              </button>
+              <button id="stopRouteBtn" class="nav-ctrl-btn danger" aria-label="Stop navigation route">
+                <span>🛑 Stop</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Nearby Places Search & Category Explorer -->
+          <div id="nearbyPlacesWrap" class="nearby-places-wrap">
+            <div class="nav-search-bar">
+              <form id="navSearchForm" class="nav-search-form" onsubmit="event.preventDefault();">
+                <input type="text" id="navSearchInput" placeholder="Say 'Take me to...' or search place..." autocomplete="off">
+                <button type="button" id="navVoiceSearchBtn" class="nav-mic-btn" aria-label="Voice search for places">
+                  <span aria-hidden="true">🎙️</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Accessibility Category Chips -->
+            <div class="nearby-categories-row" role="tablist" aria-label="Place Categories">
+              <button class="nearby-cat-chip active" data-category="pharmacy">💊 Pharmacy</button>
+              <button class="nearby-cat-chip" data-category="hospital">🏥 Hospital</button>
+              <button class="nearby-cat-chip" data-category="cafe">☕ Café</button>
+              <button class="nearby-cat-chip" data-category="supermarket">🛒 Supermarket</button>
+              <button class="nearby-cat-chip" data-category="restaurant">🍴 Restaurant</button>
+              <button class="nearby-cat-chip" data-category="atm">🏧 ATM</button>
+              <button class="nearby-cat-chip" data-category="bank">🏦 Bank</button>
+              <button class="nearby-cat-chip" data-category="station">🚉 Station</button>
+              <button class="nearby-cat-chip" data-category="college">🏫 College</button>
+              <button class="nearby-cat-chip" data-category="hotel">🏨 Hotel</button>
+            </div>
+
+            <!-- Status Banner -->
+            <div class="nav-status-banner">
+              <span id="navStatusText">Select a category or say "Find a pharmacy"</span>
+            </div>
+
+            <!-- Nearby Place Results (1, 2, 3) -->
+            <div id="nearbyPlacesList" class="nearby-places-list" role="feed" aria-label="Nearby Places Results">
+              <!-- Populated dynamically by navigation-engine.js -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ==============================================
+         SCREEN 9 / MODAL: EMERGENCY SOS PROTOTYPE
+         ============================================== -->
+    <div id="modal-emergency" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="emergency-dialog-title">
+      <div class="emergency-card">
+        <div class="emergency-beacon-circle" aria-hidden="true">
+          <span class="beacon-wave"></span>
+          <span class="beacon-icon">🆘</span>
+        </div>
+
+        <h2 id="emergency-dialog-title" class="emergency-title">EMERGENCY ASSISTANCE</h2>
+        <p class="emergency-desc">
+          Emergency alert protocol initiated. Calling designated emergency contact and sharing current simulated GPS coordinates.
+        </p>
+
+        <!-- 5-Second Countdown -->
+        <div class="countdown-circle">
+          <span id="countdownNumber">5</span>
+          <span class="countdown-label">seconds</span>
+        </div>
+
+        <div class="emergency-actions">
+          <button id="cancelEmergencyBtn" class="btn-cancel-large" aria-label="Cancel emergency call">
+            CANCEL ALERT
+          </button>
+          
+          <button id="confirmEmergencyBtn" class="btn-call-large" aria-label="Call emergency contact now">
+            CALL NOW
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==============================================
+         AUTHENTICATION MODAL: LOGIN & SIGN UP
+         ============================================== -->
+    <div id="modal-auth" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="authDialogTitle">
+      <div class="auth-card">
+        <button id="closeAuthModalBtn" class="modal-close-corner" aria-label="Close Authentication dialog">✕</button>
+
+        <div class="auth-header">
+          <div class="auth-emblem">◉</div>
+          <h2 id="authDialogTitle" class="auth-title">Welcome to LUMA</h2>
+          <p class="auth-subtitle">Sign in to save navigation history, custom preferences, and emergency contacts.</p>
+        </div>
+
+        <!-- Auth Tab Switcher -->
+        <div class="auth-tabs" role="tablist">
+          <button id="tabBtnLogin" class="auth-tab-btn active" role="tab" aria-selected="true" aria-controls="authFormLogin">
+            Log In
+          </button>
+          <button id="tabBtnSignup" class="auth-tab-btn" role="tab" aria-selected="false" aria-controls="authFormSignup">
+            Sign Up
+          </button>
+        </div>
+
+        <!-- Error/Status Alert in Modal -->
+        <div id="authAlertBanner" class="auth-alert-banner hidden" role="alert"></div>
+
+        <!-- Log In Form -->
+        <form id="authFormLogin" class="auth-form" autocomplete="on">
+          <div class="form-group">
+            <label for="loginEmail" class="form-label">Email or Username</label>
+            <input type="text" id="loginEmail" class="form-input" placeholder="e.g. user@example.com" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label for="loginPassword" class="form-label">Password</label>
+            <div class="password-input-wrap">
+              <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+              <button type="button" class="pwd-toggle-btn" aria-label="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+          <div class="form-row-between">
+            <label class="checkbox-label">
+              <input type="checkbox" id="loginRememberMe" checked>
+              <span>Remember me</span>
+            </label>
+            <button type="button" id="forgotPwdBtn" class="text-link-btn">Forgot Password?</button>
+          </div>
+          <button type="submit" class="btn-auth-primary" id="loginSubmitBtn">
+            LOG IN
+          </button>
+          <div class="auth-divider"><span>OR</span></div>
+          <button type="button" class="btn-auth-guest" id="quickDemoLoginBtn">
+            ⚡ Quick Demo Log In
+          </button>
+        </form>
+
+        <!-- Sign Up Form -->
+        <form id="authFormSignup" class="auth-form hidden" autocomplete="on">
+          <div class="form-group">
+            <label for="signupName" class="form-label">Full Name</label>
+            <input type="text" id="signupName" class="form-input" placeholder="John Doe" required autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="signupEmail" class="form-label">Email Address</label>
+            <input type="email" id="signupEmail" class="form-input" placeholder="john@example.com" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="signupPassword" class="form-label">Password</label>
+            <div class="password-input-wrap">
+              <input type="password" id="signupPassword" class="form-input" placeholder="Min. 4 characters" required autocomplete="new-password">
+              <button type="button" class="pwd-toggle-btn" aria-label="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="signupPref" class="form-label">Primary Accessibility Mode</label>
+            <select id="signupPref" class="form-input">
+              <option value="voice">🎙️ Voice-First Navigation</option>
+              <option value="contrast">🎨 High Contrast (WCAG AAA)</option>
+              <option value="screenreader">🗣️ Screen Reader Optimized</option>
+              <option value="standard">Standard Dark OLED</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-auth-primary" id="signupSubmitBtn">
+            CREATE ACCOUNT
+          </button>
+        </form>
+
+        <!-- Logged In Profile View (shown when user is authenticated) -->
+        <div id="authProfileView" class="auth-profile-view hidden">
+          <div class="profile-card-badge">
+            <span class="profile-big-avatar" id="profileBigAvatar">👤</span>
+            <div class="profile-info">
+              <h3 id="profileFullName">User Name</h3>
+              <p id="profileEmail">user@example.com</p>
+              <span class="profile-badge-pill" id="profilePrefBadge">Voice-First Mode</span>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button id="profileLogoutBtn" class="btn-profile-logout">Log Out</button>
+            <button id="profileCloseBtn" class="btn-profile-done">Done</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==============================================
+         GLOBAL MOBILE BOTTOM NAVIGATION BAR
+         ============================================== -->
+    <nav class="app-bottom-nav" id="bottomNav" role="navigation" aria-label="Main Navigation">
+      <button class="nav-tab active" data-target="screen-welcome" aria-label="Home Welcome Screen">
+        <span class="nav-icon" aria-hidden="true">🏠</span>
+        <span class="nav-label">Home</span>
+      </button>
+
+      <button class="nav-tab" data-target="screen-live" aria-label="Live Camera Assistance">
+        <span class="nav-icon" aria-hidden="true">📷</span>
+        <span class="nav-label">Assist</span>
+      </button>
+
+      <button class="nav-tab" data-target="screen-ask" aria-label="Ask LUMA Voice Assistant">
+        <span class="nav-icon" aria-hidden="true">🎙️</span>
+        <span class="nav-label">Ask</span>
+      </button>
+
+      <button class="nav-tab" data-target="screen-read" aria-label="Read and OCR Text Mode">
+        <span class="nav-icon" aria-hidden="true">📖</span>
+        <span class="nav-label">Read</span>
+      </button>
+
+      <button class="nav-tab" data-target="screen-nav" aria-label="LUMA Navigation and Nearby Places">
+        <span class="nav-icon" aria-hidden="true">🧭</span>
+        <span class="nav-label">Nav</span>
+      </button>
+
+      <button class="nav-tab" data-target="screen-history" aria-label="Assistance History Log">
+        <span class="nav-icon" aria-hidden="true">📋</span>
+        <span class="nav-label">History</span>
+      </button>
+
+      <button class="nav-tab" data-target="screen-settings" aria-label="Settings and Preferences">
+        <span class="nav-icon" aria-hidden="true">⚙️</span>
+        <span class="nav-label">Settings</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- TENSORFLOW.JS & CLIENT-SIDE AI PERCEPTION -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+  
+  <!-- REAL CLIENT-SIDE OCR ENGINE -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <!-- APPLICATION SCRIPTS -->
+  <script src="js/settings.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/audio-sonar.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/navigation-engine.js"></script>
+  <script src="js/context-engine.js"></script>
+  <script src="js/voice-commander.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/priority-engine.js"></script>
+  <script src="js/ocr-engine.js"></script>
+  <script src="js/scene-descriptor.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
